@@ -12,6 +12,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
 
+// Error Handler
+app.use((error, req, res, next) => {
+  // console.log(error.message);
+  // if (!error.statusCode) {
+  //   error.statusCode = 500;
+  // }
+  res.status(error.statusCode).json({
+    errorMessage: error.message,
+  });
+});
+
 mongoose
   .connect(
     "mongodb+srv://admin:admin@cluster0.c7q5eko.mongodb.net/ORTHO?retryWrites=true&w=majority"

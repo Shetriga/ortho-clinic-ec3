@@ -70,7 +70,9 @@ exports.postSignup = async (req, res, next) => {
       token,
     });
   } catch (e) {
-    console.log(e);
+    const error = new Error(e.message);
+    e.statusCode = 500;
+    return next(error);
   }
 };
 
