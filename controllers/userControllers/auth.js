@@ -5,6 +5,8 @@ const {
 const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const AuthInfo = require("../../models/authInfo");
+const jwt = require("jsonwebtoken");
+const { validationResult } = require("express-validator");
 
 exports.postAddUser = async (req, res, next) => {
   const { username, gender, password, phone } = req.body;
@@ -24,13 +26,20 @@ exports.postAddUser = async (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
-  const { name, password, gender, phone, type } = req.body;
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { username, password, gender, phone, type } = req.body;
   // console.log(type);
 
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = new User({
-      username: name,
+      username,
       phone,
       password: hashedPassword,
       gender,
@@ -41,12 +50,12 @@ exports.postSignup = async (req, res, next) => {
     const createdUser = await newUser.save();
     const token = generateToken({
       userId: createdUser._id,
-      name: name,
+      name: username,
       type: createdUser.type,
     });
     const refreshToken = generateRefreshToken({
       userId: createdUser._id,
-      name: name,
+      name: username,
       type: createdUser.type,
     });
 
@@ -78,18 +87,75 @@ exports.getAllUsers = async (req, res, next) => {
 };
 
 exports.postLogin = async (req, res, next) => {
-  const { password } = req.body;
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { password, username } = req.body;
+  let exactUser;
+  let token;
 
   try {
-    const passwordIsValid = await bcrypt.compare(
-      password,
-      "$2a$12$l3VIxEFyLHemZsgAuHjvAeXoS3MuYO/m2.eavSo9g3vehYmewJE3u"
+    const foundUsers = await User.find({ username }).select(
+      "username gender phone type password"
     );
-    console.log(passwordIsValid);
-    if (!passwordIsValid) return res.sendStatus(401);
+    if (foundUsers.length === 0) {
+      return res.sendStatus(404);
+    }
+
+    for (const user of foundUsers) {
+      const passwordIsValid = await bcrypt.compare(password, user.password);
+      if (passwordIsValid) {
+        exactUser = user;
+        break;
+      }
+    }
+    token = await generateToken({
+      userId: exactUser._id,
+      name: exactUser.username,
+      type: exactUser.type,
+    });
+    if (!exactUser) return res.sendStatus(404);
   } catch (e) {
     console.log(e);
   }
 
-  res.sendStatus(200);
+  res.status(200).json({ name: exactUser.username, token });
+};
+
+exports.postRefreshToken = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { refreshToken } = req.body;
+
+  try {
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (err, data) => {
+        if (err) return res.sendStatus(401);
+
+        //Chech if we have that refresh token in db
+        let userRefreshToken = await AuthInfo.findOne({ refreshToken });
+        if (userRefreshToken === null) return res.sendStatus(401);
+
+        const token = generateToken({
+          userId: data.userId,
+          name: data.name,
+          type: data.type,
+        });
+        return res.status(200).json({ token });
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };

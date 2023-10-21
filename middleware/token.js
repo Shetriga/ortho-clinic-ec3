@@ -10,7 +10,7 @@ exports.generateToken = ({ userId, name, type }) => {
 exports.generateRefreshToken = ({ userId, name, type }) => {
   const refreshToken = jwt.sign(
     { userId, name, type },
-    "process.env.TOKEN_SECRET",
+    process.env.REFRESH_TOKEN_SECRET,
     {
       expiresIn: "90d",
     }

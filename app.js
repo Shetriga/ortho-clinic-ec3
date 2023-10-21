@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const bodyParser = require("body-parser");
-require("dotenv").config;
+require("dotenv").config();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
