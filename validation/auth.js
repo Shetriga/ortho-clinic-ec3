@@ -11,3 +11,7 @@ exports.postSignUpValidation = [
   check("gender", "Gender is missing").notEmpty(),
   check("phone", "Phone is missing").notEmpty(),
 ];
+
+exports.logoutValidation = [
+  check("refreshToken", "Refresh Token is missing").notEmpty(),
+];

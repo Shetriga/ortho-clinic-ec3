@@ -68,6 +68,8 @@ exports.postSignup = async (req, res, next) => {
 
     res.status(200).json({
       token,
+      refreshToken,
+      username,
     });
   } catch (e) {
     const error = new Error(e.message);
@@ -115,12 +117,12 @@ exports.postLogin = async (req, res, next) => {
         break;
       }
     }
+    if (!exactUser) return res.sendStatus(404);
     token = await generateToken({
       userId: exactUser._id,
       name: exactUser.username,
       type: exactUser.type,
     });
-    if (!exactUser) return res.sendStatus(404);
   } catch (e) {
     console.log(e);
   }
@@ -160,4 +162,42 @@ exports.postRefreshToken = async (req, res, next) => {
   } catch (e) {
     console.log(e);
   }
+};
+
+exports.getUserData = async (req, res, next) => {
+  const userId = req.params.uid;
+  let foundUser;
+
+  try {
+    foundUser = await User.findById(userId);
+
+    if (!foundUser) return res.sendStatus(404);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+  res.status(200).json({
+    foundUser,
+  });
+};
+
+exports.postLogout = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { refreshToken } = req.body;
+
+  try {
+    await AuthInfo.deleteOne({ refreshToken });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+  res.sendStatus(200);
 };
