@@ -1,3 +1,5 @@
 const { check } = require("express-validator");
 
-exports.tokenValidation = [check("token", "Token is missing").notEmpty()];
+exports.tokenValidation = [
+  check("refreshToken", "Refresh Token is missing").notEmpty(),
+];
