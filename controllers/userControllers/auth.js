@@ -101,6 +101,7 @@ exports.postLogin = async (req, res, next) => {
   const { password, username } = req.body;
   let exactUser;
   let token;
+  let foundAuthInfo;
 
   try {
     const foundUsers = await User.find({ username }).select(
@@ -123,11 +124,17 @@ exports.postLogin = async (req, res, next) => {
       name: exactUser.username,
       type: exactUser.type,
     });
+    // Get the refresh token from authinfo to send it in res
+    foundAuthInfo = await AuthInfo.findOne({ userId: exactUser._id });
   } catch (e) {
     console.log(e);
   }
 
-  res.status(200).json({ name: exactUser.username, token });
+  res.status(200).json({
+    name: exactUser.username,
+    token,
+    refreshToken: foundAuthInfo.refreshToken,
+  });
 };
 
 exports.postRefreshToken = async (req, res, next) => {
