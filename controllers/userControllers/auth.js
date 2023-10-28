@@ -165,11 +165,10 @@ exports.postRefreshToken = async (req, res, next) => {
 };
 
 exports.getUserData = async (req, res, next) => {
-  const userId = req.params.uid;
   let foundUser;
 
   try {
-    foundUser = await User.findById(userId);
+    foundUser = await User.findById(req.user.userId);
 
     if (!foundUser) return res.sendStatus(404);
   } catch (e) {
