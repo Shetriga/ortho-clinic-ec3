@@ -196,10 +196,10 @@ exports.postLogout = async (req, res, next) => {
     });
   }
 
-  const { refreshToken } = req.body;
-
   try {
-    await AuthInfo.deleteOne({ refreshToken });
+    const foundAuthInfo = AuthInfo.findOne({ userId: req.user.userId });
+    if (!foundAuthInfo) return res.sendStatus(404);
+    await foundAuthInfo.deleteOne();
   } catch (e) {
     const error = new Error(e.message);
     error.statusCode = 500;
