@@ -102,6 +102,7 @@ exports.postLogin = async (req, res, next) => {
   let exactUser;
   let token;
   let foundAuthInfo;
+  let refreshToken;
 
   try {
     const foundUsers = await User.find({ username }).select(
@@ -119,13 +120,28 @@ exports.postLogin = async (req, res, next) => {
       }
     }
     if (!exactUser) return res.sendStatus(404);
-    token = await generateToken({
+    token = generateToken({
       userId: exactUser._id,
       name: exactUser.username,
       type: exactUser.type,
     });
     // Get the refresh token from authinfo to send it in res
     foundAuthInfo = await AuthInfo.findOne({ userId: exactUser._id });
+    if (!foundAuthInfo) {
+      refreshToken = generateRefreshToken({
+        userId: exactUser._id,
+        name: exactUser.username,
+        type: exactUser.type,
+      });
+      const newAuthInfo = new AuthInfo({
+        lastLogin: Date.now(),
+        refreshToken,
+        userId: exactUser._id,
+      });
+      await newAuthInfo.save();
+    } else {
+      refreshToken = foundAuthInfo.refreshToken;
+    }
   } catch (e) {
     console.log(e);
   }
@@ -133,7 +149,7 @@ exports.postLogin = async (req, res, next) => {
   res.status(200).json({
     name: exactUser.username,
     token,
-    refreshToken: foundAuthInfo.refreshToken,
+    refreshToken,
   });
 };
 
