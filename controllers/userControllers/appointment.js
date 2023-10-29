@@ -31,3 +31,18 @@ exports.postNewAppointment = async (req, res, next) => {
 
   res.sendStatus(201);
 };
+
+exports.getAppointments = async (req, res, next) => {
+  let appointments;
+
+  try {
+    appointments = await Appointment.find({ userId: req.user.userId });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+  res.status(200).json({
+    appointments,
+  });
+};
