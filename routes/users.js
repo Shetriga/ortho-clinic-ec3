@@ -9,6 +9,7 @@ const {
   getAppointments,
 } = require("../controllers/userControllers/appointment");
 const { postNewAppointmentValidation } = require("../validation/appointment");
+const { getVisitImages } = require("../controllers/userControllers/visit");
 const router = express.Router();
 
 router.post("/", postAddUser);
@@ -23,5 +24,7 @@ router.post(
   postNewAppointmentValidation,
   postNewAppointment
 );
+
+router.get("/visit/images/:vid", authorizedUser, getVisitImages);
 
 module.exports = router;
