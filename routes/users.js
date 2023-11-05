@@ -25,6 +25,6 @@ router.post(
   postNewAppointment
 );
 
-router.get("/visit/images/:vid", authorizedUser, getVisitImages);
+router.get("/visit/images/:aid", authorizedUser, getVisitImages);
 
 module.exports = router;
