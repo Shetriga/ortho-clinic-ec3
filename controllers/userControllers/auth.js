@@ -37,6 +37,10 @@ exports.postSignup = async (req, res, next) => {
   // console.log(type);
 
   try {
+    // Check if user with same phone already exists
+    const userAlreadyExists = await User.findOne({ phone });
+    if (userAlreadyExists) return res.sendStatus(409); // 409 means conflict
+
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = new User({
       username,
@@ -105,11 +109,12 @@ exports.postLogin = async (req, res, next) => {
   let refreshToken;
 
   try {
-    const foundUsers = await User.find({ username }).select(
+    let foundUsers = await User.find({ username }).select(
       "username gender phone type password"
     );
     if (foundUsers.length === 0) {
-      return res.sendStatus(404);
+      foundUsers = await User.find({ phone: username });
+      if (foundUsers.length === 0) return res.sendStatus(404);
     }
 
     for (const user of foundUsers) {
