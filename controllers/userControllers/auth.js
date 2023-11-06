@@ -146,6 +146,8 @@ exports.postLogin = async (req, res, next) => {
       await newAuthInfo.save();
     } else {
       refreshToken = foundAuthInfo.refreshToken;
+      foundAuthInfo.lastLogin = Date.now();
+      await foundAuthInfo.save();
     }
   } catch (e) {
     console.log(e);
