@@ -43,7 +43,7 @@ exports.postSignup = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const newUser = new User({
-      username,
+      username: username.toLowerCase(),
       phone,
       password: hashedPassword,
       gender,
@@ -109,9 +109,9 @@ exports.postLogin = async (req, res, next) => {
   let refreshToken;
 
   try {
-    let foundUsers = await User.find({ username }).select(
-      "username gender phone type password"
-    );
+    let foundUsers = await User.find({
+      username: username.toLowerCase(),
+    }).select("username gender phone type password");
     if (foundUsers.length === 0) {
       foundUsers = await User.find({ phone: username });
       if (foundUsers.length === 0) return res.sendStatus(404);
@@ -210,13 +210,6 @@ exports.getUserData = async (req, res, next) => {
 };
 
 exports.postLogout = async (req, res, next) => {
-  const result = validationResult(req);
-  if (!result.isEmpty()) {
-    return res.status(401).json({
-      errorMessage: `Validation error: ${result.errors[0].msg}`,
-    });
-  }
-
   try {
     const foundAuthInfo = AuthInfo.findOne({ userId: req.user.userId });
     if (!foundAuthInfo) return res.sendStatus(404);
