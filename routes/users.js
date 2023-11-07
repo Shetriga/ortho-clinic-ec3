@@ -7,6 +7,7 @@ const { authorizedUser } = require("../middleware/Authorization");
 const {
   postNewAppointment,
   getAppointments,
+  deleteAppointment,
 } = require("../controllers/userControllers/appointment");
 const { postNewAppointmentValidation } = require("../validation/appointment");
 const { getVisitImages } = require("../controllers/userControllers/visit");
@@ -17,6 +18,8 @@ router.post("/", postAddUser);
 router.get("/data", authorizedUser, getUserData);
 
 router.get("/appointments", authorizedUser, getAppointments);
+
+router.delete("/appointment/:aid", authorizedUser, deleteAppointment);
 
 router.post(
   "/appointment",
