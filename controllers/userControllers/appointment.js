@@ -13,6 +13,10 @@ exports.postNewAppointment = async (req, res, next) => {
   const { name, phone, date, time, clinic } = req.body;
 
   try {
+    // First check if we have conflict with another appointment
+    const appointmentAlreadyExists = await Appointment.findOne({ date, time });
+    if (appointmentAlreadyExists) return res.sendStatus(409);
+
     const newAppointment = new Appointment({
       userId: req.user.userId,
       name,
