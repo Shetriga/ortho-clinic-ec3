@@ -66,3 +66,26 @@ exports.deleteAppointment = async (req, res, next) => {
   }
   res.sendStatus(200);
 };
+
+exports.getAppointmentDetails = async (req, res, next) => {
+  const appointmentId = req.params.aid;
+
+  try {
+    const foundAppointment = await Appointment.findById(appointmentId);
+    if (!foundAppointment) return res.sendStatus(404);
+    if (foundAppointment.userId.toString() !== req.user.userId)
+      return res.sendStatus(401);
+
+    res.status(200).json({
+      name: foundAppointment.name,
+      clinic: foundAppointment.clinic,
+      tmie: foundAppointment.time,
+      date: foundAppointment.date,
+      phone: foundAppointment.phone,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};

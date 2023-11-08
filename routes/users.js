@@ -8,6 +8,7 @@ const {
   postNewAppointment,
   getAppointments,
   deleteAppointment,
+  getAppointmentDetails,
 } = require("../controllers/userControllers/appointment");
 const { postNewAppointmentValidation } = require("../validation/appointment");
 const { getVisitImages } = require("../controllers/userControllers/visit");
@@ -27,6 +28,8 @@ router.post(
   postNewAppointmentValidation,
   postNewAppointment
 );
+
+router.get("/appointment/details/:aid", authorizedUser, getAppointmentDetails);
 
 router.get("/visit/images/:aid", authorizedUser, getVisitImages);
 
