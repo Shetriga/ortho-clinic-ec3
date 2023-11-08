@@ -5,6 +5,7 @@ const {
   postLogin,
   postRefreshToken,
   postLogout,
+  postValidateToken,
 } = require("../controllers/userControllers/auth");
 const { tokenValidation } = require("../validation/token");
 const {
@@ -22,6 +23,8 @@ router.get("/all/users", getAllUsers);
 router.post("/login", postLoginValidation, postLogin);
 
 router.post("/refreshToken", tokenValidation, postRefreshToken);
+
+router.post("/validate/token", authorizedUser, postValidateToken);
 
 router.post("/logout", authorizedUser, postLogout);
 

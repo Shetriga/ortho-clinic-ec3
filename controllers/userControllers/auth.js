@@ -223,3 +223,7 @@ exports.postLogout = async (req, res, next) => {
   }
   res.sendStatus(200);
 };
+
+exports.postValidateToken = async (req, res, next) => {
+  res.sendStatus(200);
+};
