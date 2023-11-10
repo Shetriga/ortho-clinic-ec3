@@ -3,7 +3,10 @@ const {
   postAddUser,
   getUserData,
 } = require("../controllers/userControllers/auth");
-const { authorizedUser } = require("../middleware/Authorization");
+const {
+  authorizedUser,
+  authorizedAdminOrUser,
+} = require("../middleware/Authorization");
 const {
   postNewAppointment,
   getAppointments,
@@ -16,7 +19,7 @@ const router = express.Router();
 
 router.post("/", postAddUser);
 
-router.get("/data", authorizedUser, getUserData);
+router.get("/data", authorizedAdminOrUser, getUserData);
 
 router.get("/appointments", authorizedUser, getAppointments);
 
