@@ -13,7 +13,10 @@ const {
   postSignUpValidation,
   logoutValidation,
 } = require("../validation/auth");
-const { authorizedUser } = require("../middleware/Authorization");
+const {
+  authorizedUser,
+  authorizedAdminOrUser,
+} = require("../middleware/Authorization");
 const router = express.Router();
 
 router.post("/signup", postSignUpValidation, postSignup);
@@ -24,7 +27,7 @@ router.post("/login", postLoginValidation, postLogin);
 
 router.post("/refreshToken", tokenValidation, postRefreshToken);
 
-router.post("/validate/token", authorizedUser, postValidateToken);
+router.post("/validate/token", authorizedAdminOrUser, postValidateToken);
 
 router.post("/logout", authorizedUser, postLogout);
 
