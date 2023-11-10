@@ -73,7 +73,7 @@ exports.postSignup = async (req, res, next) => {
     res.status(200).json({
       token,
       refreshToken,
-      username,
+      name: username,
     });
   } catch (e) {
     const error = new Error(e.message);
@@ -157,6 +157,7 @@ exports.postLogin = async (req, res, next) => {
     name: exactUser.username,
     token,
     refreshToken,
+    type: exactUser.type,
   });
 };
 
