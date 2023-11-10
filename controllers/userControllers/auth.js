@@ -74,6 +74,7 @@ exports.postSignup = async (req, res, next) => {
       token,
       refreshToken,
       name: username,
+      type: createdUser.type,
     });
   } catch (e) {
     const error = new Error(e.message);
