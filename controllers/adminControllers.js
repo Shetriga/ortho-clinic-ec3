@@ -65,3 +65,16 @@ exports.postAddVisit = async (req, res, next) => {
 
   res.sendStatus(201);
 };
+
+exports.getAllAppointments = async (req, res, next) => {
+  try {
+    const foundAppointments = await Appointment.find({});
+    res.status(200).json({
+      appointments: foundAppointments,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
