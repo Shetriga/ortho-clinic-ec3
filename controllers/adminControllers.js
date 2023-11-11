@@ -78,3 +78,53 @@ exports.getAllAppointments = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getAppointmentDetails = async (req, res, next) => {
+  const appointmentId = req.params.aid;
+  try {
+    const foundAppointment = await Appointment.findById(appointmentId);
+    if (!foundAppointment) return res.sendStatus(404);
+
+    res.status(200).json({
+      appointment: foundAppointment,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
+
+exports.patchAppointmentWaiting = async (req, res, next) => {
+  const appointmentId = req.params.aid;
+  try {
+    const foundAppointment = await Appointment.findById(appointmentId);
+    if (!foundAppointment) return res.sendStatus(404);
+
+    foundAppointment.status = "Waiting";
+    await foundAppointment.save();
+
+    res.sendStatus(200);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
+
+exports.patchAppointmentDone = async (req, res, next) => {
+  const appointmentId = req.params.aid;
+  try {
+    const foundAppointment = await Appointment.findById(appointmentId);
+    if (!foundAppointment) return res.sendStatus(404);
+
+    foundAppointment.status = "Done";
+    await foundAppointment.save();
+
+    res.sendStatus(200);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
