@@ -52,6 +52,10 @@ exports.postAddVisit = async (req, res, next) => {
     const foundUser = await User.findById(userId);
     if (!foundAppointment || !foundUser) return res.sendStatus(404);
 
+    // Check if a visit already exists for that specific appointment
+    const visitAlreadyExists = await Visit.findOne({ appointmentId });
+    if (visitAlreadyExists) return res.sendStatus(409); // Conflict
+
     const newVisit = new Visit({
       appointmentId,
       userId,
