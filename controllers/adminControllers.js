@@ -139,3 +139,20 @@ exports.patchAppointmentDone = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getVisitId = async (req, res, next) => {
+  const appointmentId = req.params.aid;
+
+  try {
+    const foundVisit = await Visit.findOne({ appointmentId });
+    if (!foundVisit) return res.sendStatus(404);
+
+    return res.status(200).json({
+      visitId: foundVisit._id,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};

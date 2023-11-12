@@ -7,6 +7,7 @@ const {
   getAppointmentDetails,
   patchAppointmentWaiting,
   patchAppointmentDone,
+  getVisitId,
 } = require("../controllers/adminControllers");
 const router = express.Router();
 const multerHelper = require(".././middleware/multer");
@@ -14,6 +15,8 @@ const multerHelper = require(".././middleware/multer");
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
 
 router.post("/visit/:aid/:uid", authorizedAdmin, postAddVisit);
+
+router.get("/visitId/:aid", authorizedAdmin, getVisitId);
 
 router.get("/all/appointments", authorizedAdmin, getAllAppointments);
 
