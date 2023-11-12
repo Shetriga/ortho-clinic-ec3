@@ -32,6 +32,12 @@ exports.postVisitImage = async (req, res, next) => {
       imageUrl: `${process.env.GOOGLE_CLOUD_STORAGE}${visitId}/${image.filename}`,
     });
     const createdImage = await newImage.save();
+
+    // Insert the image url in the visit document in visit table so the array will not be empty for the user
+    // when he/she shows the images of an appointment
+    foundVisit.imageUrls.push(createdImage.imageUrl);
+    await foundVisit.save();
+
     // Delete the file from the server after uploading
     deleteFile(`images/${image.filename}`);
     return res.status(201).json({
