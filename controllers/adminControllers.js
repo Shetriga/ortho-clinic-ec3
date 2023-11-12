@@ -31,16 +31,17 @@ exports.postVisitImage = async (req, res, next) => {
       userId,
       imageUrl: `${process.env.GOOGLE_CLOUD_STORAGE}${visitId}/${image.filename}`,
     });
-    await newImage.save();
+    const createdImage = await newImage.save();
     // Delete the file from the server after uploading
     deleteFile(`images/${image.filename}`);
+    return res.status(201).json({
+      imageUrl: createdImage.imageUrl,
+    });
   } catch (e) {
     const error = new Error(e.message);
     error.statusCode = 500;
     return next(error);
   }
-
-  res.sendStatus(201);
 };
 
 exports.postAddVisit = async (req, res, next) => {
