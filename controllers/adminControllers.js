@@ -67,14 +67,16 @@ exports.postAddVisit = async (req, res, next) => {
       appointmentId,
       userId,
     });
-    await newVisit.save();
+    const createdVisit = await newVisit.save();
+
+    res.status(201).json({
+      visitId: createdVisit._id,
+    });
   } catch (e) {
     const error = new Error(e.message);
     error.statusCode = 500;
     return next(error);
   }
-
-  res.sendStatus(201);
 };
 
 exports.getAllAppointments = async (req, res, next) => {
