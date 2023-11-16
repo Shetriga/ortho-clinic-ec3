@@ -8,6 +8,7 @@ const {
   patchAppointmentWaiting,
   patchAppointmentDone,
   getVisitId,
+  deleteAppointment,
 } = require("../controllers/adminControllers");
 const router = express.Router();
 const multerHelper = require(".././middleware/multer");
@@ -27,6 +28,8 @@ router.patch(
   authorizedAdmin,
   patchAppointmentWaiting
 );
+
+router.delete("/appointment/:aid", authorizedAdmin, deleteAppointment);
 
 router.patch("/appointment/done/:aid", authorizedAdmin, patchAppointmentDone);
 

@@ -158,3 +158,21 @@ exports.getVisitId = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.deleteAppointment = async (req, res, next) => {
+  const appointmentId = req.params.aid;
+  try {
+    const foundAppointment = Appointment.findById(appointmentId);
+    if (!foundAppointment) return res.sendStatus(404);
+    const foundVisit = Visit.findOne({ appointmentId });
+    if (foundVisit) {
+      await foundVisit.deleteOne();
+    }
+    await foundAppointment.deleteOne();
+    res.sendStatus(200);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
