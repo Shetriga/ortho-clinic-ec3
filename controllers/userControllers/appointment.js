@@ -1,5 +1,7 @@
 const { validationResult } = require("express-validator");
 const Appointment = require("../../models/appointment");
+const { sendNotification } = require("../../util/notification");
+const User = require("../../models/User");
 
 exports.postNewAppointment = async (req, res, next) => {
   const result = validationResult(req);
@@ -27,6 +29,16 @@ exports.postNewAppointment = async (req, res, next) => {
     });
 
     await newAppointment.save();
+    // Send push notification for the user
+    // First get the notification token for the user
+    const foundUser = await User.findById(req.user.userId);
+    const notiToken = foundUser.notificationToken;
+    // Now send the notifications token
+    await sendNotification({
+      registrationToken: notiToken,
+      title: "تم الحجـز بنجاح",
+      body: "ستقوم العيادة بالتوصل معك لتأكيد الحجز",
+    });
   } catch (e) {
     const error = new Error(e.message);
     error.statusCode = 500;
