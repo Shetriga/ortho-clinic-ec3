@@ -13,6 +13,9 @@ const {
 } = require("../controllers/adminControllers");
 const router = express.Router();
 const multerHelper = require(".././middleware/multer");
+const {
+  patchNotificationToken,
+} = require("../controllers/userControllers/account");
 
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
 
@@ -35,5 +38,11 @@ router.patch(
 router.delete("/appointment/:aid", authorizedAdmin, deleteAppointment);
 
 router.patch("/appointment/done/:aid", authorizedAdmin, patchAppointmentDone);
+
+router.patch(
+  "/notificationToken/:token",
+  authorizedAdmin,
+  patchNotificationToken
+);
 
 module.exports = router;

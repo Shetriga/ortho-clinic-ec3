@@ -37,7 +37,6 @@ app.use((error, req, res, next) => {
 //       console.clear();
 //       console.log(`Server is up and running`);
 //       console.log("Connected to database");
-//       tmp();
 //     });
 //   })
 //   .catch((err) => {
