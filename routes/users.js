@@ -15,11 +15,20 @@ const {
 } = require("../controllers/userControllers/appointment");
 const { postNewAppointmentValidation } = require("../validation/appointment");
 const { getVisitImages } = require("../controllers/userControllers/visit");
+const {
+  patchNotificationToken,
+} = require("../controllers/userControllers/account");
 const router = express.Router();
 
 router.post("/", postAddUser);
 
 router.get("/data", authorizedAdminOrUser, getUserData);
+
+router.patch(
+  "/notificationToken/:token",
+  authorizedUser,
+  patchNotificationToken
+);
 
 router.get("/appointments", authorizedUser, getAppointments);
 

@@ -26,6 +26,9 @@ const userSchema = new Schema(
     adminClinic: {
       type: String,
     },
+    notificationToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

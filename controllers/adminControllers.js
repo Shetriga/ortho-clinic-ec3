@@ -176,3 +176,18 @@ exports.deleteAppointment = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getAppointmentsForClinic = async (req, res, next) => {
+  const clinic = req.params.clinic;
+
+  try {
+    const appointments = await Appointment.find({ clinic });
+    res.status(200).json({
+      appointments,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};

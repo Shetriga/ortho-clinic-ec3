@@ -9,6 +9,7 @@ const {
   patchAppointmentDone,
   getVisitId,
   deleteAppointment,
+  getAppointmentsForClinic,
 } = require("../controllers/adminControllers");
 const router = express.Router();
 const multerHelper = require(".././middleware/multer");
@@ -20,6 +21,8 @@ router.post("/visit/:aid/:uid", authorizedAdmin, postAddVisit);
 router.get("/visitId/:aid", authorizedAdmin, getVisitId);
 
 router.get("/all/appointments", authorizedAdmin, getAllAppointments);
+
+router.get("/appointments/:clinic", authorizedAdmin, getAppointmentsForClinic);
 
 router.get("/appointment/details/:aid", authorizedAdmin, getAppointmentDetails);
 
