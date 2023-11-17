@@ -39,6 +39,18 @@ exports.postNewAppointment = async (req, res, next) => {
       title: "تم الحجـز بنجاح",
       body: "ستقوم العيادة بالتوصل معك لتأكيد الحجز",
     });
+
+    // Now send notification for the corresponding admin
+    const foundAdmin = await User.findOne({
+      type: "Admin",
+      adminClinic: clinic,
+    });
+    const adminNotiToken = foundAdmin.notificationToken;
+    await sendNotification({
+      registrationToken: adminNotiToken,
+      title: "حجـز جديد",
+      body: `Name: ${name} - Date: ${date} - Time: ${time}`,
+    });
   } catch (e) {
     const error = new Error(e.message);
     error.statusCode = 500;
