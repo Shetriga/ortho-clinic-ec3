@@ -1,5 +1,8 @@
 const express = require("express");
-const { authorizedAdmin } = require("../middleware/Authorization");
+const {
+  authorizedAdmin,
+  authorizedAdminOrUser,
+} = require("../middleware/Authorization");
 const {
   postVisitImage,
   postAddVisit,
@@ -39,7 +42,7 @@ router.patch(
 
 router.post(
   "/appointment/check",
-  authorizedAdmin,
+  authorizedAdminOrUser,
   appointmentCheckValidations,
   postAppointmentAlreadyExists
 );
