@@ -5,6 +5,8 @@ const orthoBucket = require("../middleware/google_cloud_storage");
 const Image = require("../models/image");
 const { deleteFile } = require("../util/delete_file");
 
+const { validationResult } = require("express-validator");
+
 exports.postVisitImage = async (req, res, next) => {
   const image = req.file;
   const visitId = req.params.vid;
@@ -190,4 +192,26 @@ exports.getAppointmentsForClinic = async (req, res, next) => {
     error.statusCode = 500;
     return next(error);
   }
+};
+
+exports.postAppointmentAlreadyExists = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { date, time, clinic } = req.body;
+
+  try {
+    const foundAppointment = await Appointment.findOne({ date, time, clinic });
+    if (!foundAppointment) return res.sendStatus(404);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+
+  res.sendStatus(200);
 };
