@@ -4,7 +4,7 @@ const Visit = require("../models/visit");
 const orthoBucket = require("../middleware/google_cloud_storage");
 const Image = require("../models/image");
 const { deleteFile } = require("../util/delete_file");
-const { sendNotification } = require("../../util/notification");
+const { sendNotification } = require("../util/notification");
 
 const { validationResult } = require("express-validator");
 
