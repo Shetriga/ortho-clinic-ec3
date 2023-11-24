@@ -32,13 +32,15 @@ app.use((error, req, res, next) => {
 });
 
 io.on("connection", (socket) => {
-  socket.on("message", (data) => {
-    console.log(data);
-    io.emit("6558627f8eb432821e2b2e1c", "some message came");
+  socket.on("disconnect", () => {
+    console.log("disconnected");
   });
   console.log("A device connected");
-  io.emit("6558627f8eb432821e2b2e1c", "some message came");
+  // io.emit("6558627f8eb432821e2b2e1c", "Now we are talking");
 });
+
+const socketIoObject = io;
+module.exports.ioObject = socketIoObject;
 
 // When running on mobile hotspot
 // mongoose

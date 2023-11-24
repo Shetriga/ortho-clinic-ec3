@@ -4,6 +4,7 @@ const Visit = require("../models/visit");
 const orthoBucket = require("../middleware/google_cloud_storage");
 const Image = require("../models/image");
 const { deleteFile } = require("../util/delete_file");
+const { sendNotification } = require("../../util/notification");
 
 const { validationResult } = require("express-validator");
 
@@ -39,6 +40,17 @@ exports.postVisitImage = async (req, res, next) => {
     // when he/she shows the images of an appointment
     foundVisit.imageUrls.push(createdImage.imageUrl);
     await foundVisit.save();
+
+    // Send notification to user rgat image is available
+    const foundUser = await User.findById(userId);
+    const notificationsToken = foundUser.notificationToken;
+    if (notificationsToken !== null && notificationsToken !== "") {
+      await sendNotification({
+        registrationToken: notificationsToken,
+        title: "تم إضافة صورة",
+        body: "الصورة موجودة الآت",
+      });
+    }
 
     // Delete the file from the server after uploading
     deleteFile(`images/${image.filename}`);

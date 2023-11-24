@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const Appointment = require("../../models/appointment");
 const { sendNotification } = require("../../util/notification");
 const User = require("../../models/User");
+const socket = require("../../app");
 
 exports.postNewAppointment = async (req, res, next) => {
   const result = validationResult(req);
@@ -50,6 +51,11 @@ exports.postNewAppointment = async (req, res, next) => {
       registrationToken: adminNotiToken,
       title: "حجـز جديد",
       body: `Name: ${name} - Date: ${date} - Time: ${time}`,
+    });
+    socket.ioObject.emit(foundAdmin._id.toString(), {
+      name: name,
+      date,
+      time: time,
     });
   } catch (e) {
     const error = new Error(e.message);
