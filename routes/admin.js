@@ -14,13 +14,17 @@ const {
   deleteAppointment,
   getAppointmentsForClinic,
   postAppointmentAlreadyExists,
+  putAppointmentDetails,
 } = require("../controllers/adminControllers");
 const router = express.Router();
 const multerHelper = require(".././middleware/multer");
 const {
   patchNotificationToken,
 } = require("../controllers/userControllers/account");
-const { appointmentCheckValidations } = require("../validation/admin");
+const {
+  appointmentCheckValidations,
+  putAppointmentValidations,
+} = require("../validation/admin");
 
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
 
@@ -45,6 +49,13 @@ router.post(
   authorizedAdminOrUser,
   appointmentCheckValidations,
   postAppointmentAlreadyExists
+);
+
+router.put(
+  "/appointment/details/:aid",
+  authorizedAdmin,
+  putAppointmentValidations,
+  putAppointmentDetails
 );
 
 router.delete("/appointment/:aid", authorizedAdmin, deleteAppointment);

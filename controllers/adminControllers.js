@@ -227,3 +227,31 @@ exports.postAppointmentAlreadyExists = async (req, res, next) => {
 
   res.sendStatus(200);
 };
+
+exports.putAppointmentDetails = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { name, date, time, phone } = req.body;
+  const appointmentId = req.params.aid;
+  try {
+    const foundAppointment = await Appointment.findById(appointmentId);
+    if (!foundAppointment) return res.sendStatus(404);
+
+    foundAppointment.name = name;
+    foundAppointment.date = date;
+    foundAppointment.time = time;
+    foundAppointment.phone = phone;
+
+    await foundAppointment.save();
+    res.sendStatus(200);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
