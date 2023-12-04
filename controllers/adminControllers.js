@@ -41,6 +41,11 @@ exports.postVisitImage = async (req, res, next) => {
     foundVisit.imageUrls.push(createdImage.imageUrl);
     await foundVisit.save();
 
+    // Get the appointment date to state it in the notification
+    const foundAppointment = await Appointment.findById(
+      foundVisit.appointmentId
+    );
+
     // Send notification to user rgat image is available
     const foundUser = await User.findById(userId);
     const notificationsToken = foundUser.notificationToken;
@@ -48,7 +53,7 @@ exports.postVisitImage = async (req, res, next) => {
       await sendNotification({
         registrationToken: notificationsToken,
         title: "تم إضافة صورة",
-        body: "الصورة موجودة الآت",
+        body: `Image is now available for visit on ${foundAppointment.date} - ${foundAppointment.time}`,
       });
     }
 
