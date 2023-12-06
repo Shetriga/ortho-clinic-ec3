@@ -7,6 +7,8 @@ const bcrypt = require("bcryptjs");
 const AuthInfo = require("../../models/authInfo");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
+const { sendMail } = require("../../util/nodemailer");
+const ResetPassword = require("../../models/resetPassword");
 
 exports.postAddUser = async (req, res, next) => {
   const { username, gender, password, phone } = req.body;
@@ -227,5 +229,72 @@ exports.postLogout = async (req, res, next) => {
 };
 
 exports.postValidateToken = async (req, res, next) => {
+  res.sendStatus(200);
+};
+
+exports.postResetPassword = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { phone, email } = req.body;
+  try {
+    const foundUser = await User.findOne({ phone });
+    if (!foundUser) return res.sendStatus(404);
+
+    const foundReset = await ResetPassword.findOne({ phone });
+
+    const code = Math.floor(Math.random() * 90000) + 10000;
+    sendMail({ reciever: email, code: code });
+    if (!foundReset) {
+      const newResetPassword = new ResetPassword({
+        code,
+        phone,
+      });
+      await newResetPassword.save();
+    } else {
+      foundReset.code = code;
+      await foundReset.save();
+    }
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+
+  res.sendStatus(201);
+};
+
+exports.postNewPassword = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { phone, password, confirmPassword } = req.body;
+  if (password !== confirmPassword) {
+    return res.sendStatus(422);
+  }
+
+  try {
+    const foundUser = await User.findOne({ phone });
+    if (!foundUser) return res.sendStatus(404);
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    foundUser.password = hashedPassword;
+    await foundUser.save();
+    const foundReset = await ResetPassword.findOne({ phone });
+    await foundReset.deleteOne();
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+
   res.sendStatus(200);
 };

@@ -6,6 +6,8 @@ const {
   postRefreshToken,
   postLogout,
   postValidateToken,
+  postResetPassword,
+  postNewPassword,
 } = require("../controllers/userControllers/auth");
 const { tokenValidation } = require("../validation/token");
 const {
@@ -17,6 +19,10 @@ const {
   authorizedUser,
   authorizedAdminOrUser,
 } = require("../middleware/Authorization");
+const {
+  resetPasswordValidations,
+  newPasswordValidations,
+} = require("../validation/account");
 const router = express.Router();
 
 router.post("/signup", postSignUpValidation, postSignup);
@@ -30,5 +36,9 @@ router.post("/refreshToken", tokenValidation, postRefreshToken);
 router.post("/validate/token", authorizedAdminOrUser, postValidateToken);
 
 router.post("/logout", authorizedUser, postLogout);
+
+router.post("/reset/password", resetPasswordValidations, postResetPassword);
+
+router.post("/new/password", newPasswordValidations, postNewPassword);
 
 module.exports = router;
