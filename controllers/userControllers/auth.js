@@ -298,3 +298,29 @@ exports.postNewPassword = async (req, res, next) => {
 
   res.sendStatus(200);
 };
+
+exports.postValidateCode = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { phone, code } = req.body;
+  try {
+    const foundReset = await ResetPassword.findOne({ phone });
+    if (!foundReset) return res.sendStatus(404);
+
+    // Now we know that we found the reset password document
+    if (foundReset.code !== parseInt(code)) {
+      return res.sendStatus(422);
+    }
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+
+  res.sendStatus(200);
+};

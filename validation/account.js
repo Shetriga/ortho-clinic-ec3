@@ -10,3 +10,8 @@ exports.newPasswordValidations = [
   check("confirmPassword", "Confirm Password is missing").notEmpty(),
   check("phone", "Phone is missing").notEmpty(),
 ];
+
+exports.resetCodeValidations = [
+  check("phone", "Phone is missing").notEmpty(),
+  check("code", "Code is missing").notEmpty(),
+];
