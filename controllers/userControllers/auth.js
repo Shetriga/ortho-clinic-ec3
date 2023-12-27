@@ -76,6 +76,7 @@ exports.postSignup = async (req, res, next) => {
       token,
       refreshToken,
       name: username,
+      phone,
       type: createdUser.type,
     });
   } catch (e) {
@@ -161,6 +162,7 @@ exports.postLogin = async (req, res, next) => {
     token,
     refreshToken,
     type: exactUser.type,
+    phone: exactUser.phone,
   });
 };
 
