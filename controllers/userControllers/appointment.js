@@ -119,3 +119,55 @@ exports.getAppointmentDetails = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.notifyUsers = async (req, res, next) => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0!
+  let dd = today.getDate();
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+
+  const formattedToday = dd + "/" + mm + "/" + yyyy;
+  try {
+    const sadatFoundAppointments = await Appointment.find({
+      date: formattedToday,
+      clinic: "Sadat",
+      notified: false,
+      $or: [{ status: "Pending" }, { status: "Waiting" }],
+    }).populate("userId");
+    const octoberFoundAppointments = await Appointment.find({
+      date: formattedToday,
+      clinic: "October",
+      notified: false,
+      $or: [{ status: "Pending" }, { status: "Waiting" }],
+    }).populate("userId");
+
+    // Send push notifications for users of Sadat clinic and October clinic
+    for (let sadatApp of sadatFoundAppointments) {
+      const notiToken = sadatApp.userId.notificationToken;
+      await sendNotification({
+        registrationToken: notiToken,
+        title: "تذكيـر",
+        body: `تذكير بزيارة اليوم الساعة ${sadatApp.time} عيادة السادات.`,
+      });
+      sadatApp.notified = true;
+      await sadatApp.save();
+    }
+    for (let octoberApp of octoberFoundAppointments) {
+      const notiToken = octoberApp.userId.notificationToken;
+      await sendNotification({
+        registrationToken: notiToken,
+        title: "تذكيـر",
+        body: `تذكير بزيارة اليوم الساعة ${octoberApp.time} عيادة أكتوبر.`,
+      });
+      octoberApp.notified = true;
+      await octoberApp.save();
+    }
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};

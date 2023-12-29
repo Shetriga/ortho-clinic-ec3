@@ -12,6 +12,12 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+const cron = require("node-cron");
+const { notifyUsers } = require("./controllers/userControllers/appointment");
+
+cron.schedule("0 0 */3 * * *", () => {
+  notifyUsers();
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,34 +49,34 @@ const socketIoObject = io;
 module.exports.ioObject = socketIoObject;
 
 // When running on mobile hotspot
-// mongoose
-//   .connect(
-//     "mongodb://admin:VewWkgG84v1D21nb@ac-iyhloil-shard-00-00.c7q5eko.mongodb.net:27017,ac-iyhloil-shard-00-01.c7q5eko.mongodb.net:27017,ac-iyhloil-shard-00-02.c7q5eko.mongodb.net:27017/ORTHO?ssl=true&replicaSet=atlas-jria3l-shard-0&authSource=admin&retryWrites=true&w=majority"
-//   )
-//   .then(() => {
-//     app.listen(3000, () => {
-//       console.clear();
-//       console.log(`Server is up and running`);
-//       console.log("Connected to database");
-//     });
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-
-// When running on wifi
 mongoose
   .connect(
-    "mongodb+srv://admin:VewWkgG84v1D21nb@cluster0.c7q5eko.mongodb.net/ORTHO?retryWrites=true&w=majority"
+    "mongodb://admin:VewWkgG84v1D21nb@ac-iyhloil-shard-00-00.c7q5eko.mongodb.net:27017,ac-iyhloil-shard-00-01.c7q5eko.mongodb.net:27017,ac-iyhloil-shard-00-02.c7q5eko.mongodb.net:27017/ORTHO?ssl=true&replicaSet=atlas-jria3l-shard-0&authSource=admin&retryWrites=true&w=majority"
   )
   .then(() => {
-    server.listen(3000, () => {
+    app.listen(3000, () => {
       console.clear();
       console.log(`Server is up and running`);
       console.log("Connected to database");
-      // tmp();
     });
   })
   .catch((err) => {
     console.log(err);
   });
+
+// When running on wifi
+// mongoose
+//   .connect(
+//     "mongodb+srv://admin:VewWkgG84v1D21nb@cluster0.c7q5eko.mongodb.net/ORTHO?retryWrites=true&w=majority"
+//   )
+//   .then(() => {
+//     server.listen(3000, () => {
+//       console.clear();
+//       console.log(`Server is up and running`);
+//       console.log("Connected to database");
+//       // tmp();
+//     });
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });

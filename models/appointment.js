@@ -32,6 +32,11 @@ const appointmentSchema = new Schema({
     required: true,
     default: "Pending",
   },
+  notified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Appointment", appointmentSchema);
