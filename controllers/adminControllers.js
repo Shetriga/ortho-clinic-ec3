@@ -130,11 +130,19 @@ exports.getAppointmentDetails = async (req, res, next) => {
 exports.patchAppointmentWaiting = async (req, res, next) => {
   const appointmentId = req.params.aid;
   try {
-    const foundAppointment = await Appointment.findById(appointmentId);
+    const foundAppointment = await Appointment.findById(appointmentId).populate(
+      "userId"
+    );
     if (!foundAppointment) return res.sendStatus(404);
 
     foundAppointment.status = "Waiting";
     await foundAppointment.save();
+
+    await sendNotification({
+      registrationToken: foundAppointment.userId.notificationToken,
+      title: "تم التأكيـد",
+      body: "تم تأكيد موعد الحجز, فى إنتظاركم",
+    });
 
     res.sendStatus(200);
   } catch (e) {
