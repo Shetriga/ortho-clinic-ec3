@@ -17,7 +17,9 @@ const { postNewAppointmentValidation } = require("../validation/appointment");
 const { getVisitImages } = require("../controllers/userControllers/visit");
 const {
   patchNotificationToken,
+  postDeleteAccount,
 } = require("../controllers/userControllers/account");
+const { deleteAccountValidations } = require("../validation/account");
 const router = express.Router();
 
 router.post("/", postAddUser);
@@ -40,6 +42,8 @@ router.post(
   postNewAppointmentValidation,
   postNewAppointment
 );
+
+router.post("/delete/account", deleteAccountValidations, postDeleteAccount);
 
 router.get("/appointment/details/:aid", authorizedUser, getAppointmentDetails);
 
