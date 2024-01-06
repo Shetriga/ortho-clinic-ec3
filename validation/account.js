@@ -15,3 +15,8 @@ exports.resetCodeValidations = [
   check("phone", "Phone is missing").notEmpty(),
   check("code", "Code is missing").notEmpty(),
 ];
+
+exports.deleteAccountValidations = [
+  check("phone", "Phone number is missing").notEmpty(),
+  check("password", "Password is missing").notEmpty(),
+];

@@ -189,12 +189,22 @@ exports.getVisitId = async (req, res, next) => {
 exports.deleteAppointment = async (req, res, next) => {
   const appointmentId = req.params.aid;
   try {
-    const foundAppointment = Appointment.findById(appointmentId);
+    const foundAppointment =
+      Appointment.findById(appointmentId).populate("userId");
     if (!foundAppointment) return res.sendStatus(404);
     const foundVisit = Visit.findOne({ appointmentId });
     if (foundVisit) {
       await foundVisit.deleteOne();
     }
+
+    // Send notification for deletion of the appointment
+    // if (foundAppointment.userId.notificationToken !== null) {
+    //   await sendNotification({
+    //     registrationToken: foundAppointment.userId.notificationToken,
+    //     title: "تم إلغاء الموعد",
+    //     body: `تم إلغاء الحجز يوم ${foundAppointment.date} بعيادة ${foundAppointment.clinic}`,
+    //   });
+    // }
     await foundAppointment.deleteOne();
     res.sendStatus(200);
   } catch (e) {
