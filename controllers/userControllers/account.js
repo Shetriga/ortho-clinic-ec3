@@ -20,7 +20,7 @@ exports.patchNotificationToken = async (req, res, next) => {
 };
 
 exports.postDeleteAccount = async (req, res, next) => {
-  const result = valida(req);
+  const result = validationResult(req);
   if (!result.isEmpty()) {
     return res.status(401).json({
       errorMessage: `Validation error: ${result.errors[0].msg}`,
