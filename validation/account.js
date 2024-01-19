@@ -20,3 +20,8 @@ exports.deleteAccountValidations = [
   check("phone", "Phone number is missing").notEmpty(),
   check("password", "Password is missing").notEmpty(),
 ];
+
+exports.putAccountInfoValidations = [
+  check("name", "Name is missing").notEmpty(),
+  check("phone", "Phone is missing").notEmpty(),
+];

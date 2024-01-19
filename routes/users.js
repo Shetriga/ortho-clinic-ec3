@@ -18,8 +18,12 @@ const { getVisitImages } = require("../controllers/userControllers/visit");
 const {
   patchNotificationToken,
   postDeleteAccount,
+  putAccountInfo,
 } = require("../controllers/userControllers/account");
-const { deleteAccountValidations } = require("../validation/account");
+const {
+  deleteAccountValidations,
+  putAccountInfoValidations,
+} = require("../validation/account");
 const router = express.Router();
 
 router.post("/", postAddUser);
@@ -41,6 +45,13 @@ router.post(
   authorizedUser,
   postNewAppointmentValidation,
   postNewAppointment
+);
+
+router.put(
+  "/account/info",
+  authorizedAdminOrUser,
+  putAccountInfoValidations,
+  putAccountInfo
 );
 
 router.post("/delete/account", deleteAccountValidations, postDeleteAccount);

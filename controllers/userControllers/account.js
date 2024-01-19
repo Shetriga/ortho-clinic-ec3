@@ -19,6 +19,31 @@ exports.patchNotificationToken = async (req, res, next) => {
   }
 };
 
+exports.putAccountInfo = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { name, phone } = req.body;
+  const userId = req.user.userId;
+  try {
+    const foundUser = await User.findById(userId);
+    if (!foundUser) return res.sendStatus(404);
+
+    foundUser.username = name;
+    foundUser.phone = phone;
+    await foundUser.save();
+    res.sendStatus(200);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
+
 exports.postDeleteAccount = async (req, res, next) => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
