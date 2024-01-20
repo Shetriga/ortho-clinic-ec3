@@ -45,7 +45,7 @@ exports.authorizedAdmin = async (req, res, next) => {
 };
 
 // Authorized Owner
-exports.authorizedAdmin = async (req, res, next) => {
+exports.authorizedOwner = async (req, res, next) => {
   const token = req.headers["authorization"];
 
   if (!token) return res.sendStatus(403);

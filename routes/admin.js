@@ -2,6 +2,7 @@ const express = require("express");
 const {
   authorizedAdmin,
   authorizedAdminOrUser,
+  authorizedAdminOrUserOrOwner,
 } = require("../middleware/Authorization");
 const {
   postVisitImage,
@@ -64,7 +65,7 @@ router.patch("/appointment/done/:aid", authorizedAdmin, patchAppointmentDone);
 
 router.patch(
   "/notificationToken/:token",
-  authorizedAdmin,
+  authorizedAdminOrUserOrOwner,
   patchNotificationToken
 );
 
