@@ -157,12 +157,24 @@ exports.postLogin = async (req, res, next) => {
     console.log(e);
   }
 
+  if (exactUser.type === "Admin" || exactUser.type === "Owner") {
+    return res.status(200).json({
+      name: exactUser.username,
+      token,
+      refreshToken,
+      type: exactUser.type,
+      phone: exactUser.phone,
+    });
+  }
+
+  // Now we are sure that the user is patient
   res.status(200).json({
     name: exactUser.username,
     token,
     refreshToken,
     type: exactUser.type,
     phone: exactUser.phone,
+    patientId: exactUser.patientId,
   });
 };
 
