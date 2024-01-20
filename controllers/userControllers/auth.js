@@ -115,7 +115,7 @@ exports.postLogin = async (req, res, next) => {
   try {
     let foundUsers = await User.find({
       username: username.toLowerCase(),
-    }).select("username gender phone type password");
+    }).select("username gender phone type password patientId");
     if (foundUsers.length === 0) {
       foundUsers = await User.find({ phone: username });
       if (foundUsers.length === 0) return res.sendStatus(404);
@@ -166,6 +166,10 @@ exports.postLogin = async (req, res, next) => {
       phone: exactUser.phone,
     });
   }
+
+  console.log(exactUser);
+  // const tmpUser = await User.findById(exactUser._id);
+  // console.log(tmpUser.patientId);
 
   // Now we are sure that the user is patient
   res.status(200).json({
