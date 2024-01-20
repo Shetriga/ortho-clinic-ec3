@@ -19,6 +19,7 @@ const {
 const {
   authorizedUser,
   authorizedAdminOrUser,
+  authorizedAdminOrUserOrOwner,
 } = require("../middleware/Authorization");
 const {
   resetPasswordValidations,
@@ -37,7 +38,7 @@ router.post("/refreshToken", tokenValidation, postRefreshToken);
 
 router.post("/validate/token", authorizedAdminOrUser, postValidateToken);
 
-router.post("/logout", authorizedAdminOrUser, postLogout);
+router.post("/logout", authorizedAdminOrUserOrOwner, postLogout);
 
 router.post("/reset/password", resetPasswordValidations, postResetPassword);
 
