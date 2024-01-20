@@ -16,31 +16,31 @@ const cron = require("node-cron");
 const { notifyUsers } = require("./controllers/userControllers/appointment");
 const User = require("./models/User");
 
-async function getLatestMax() {
-  const maxId = await User.find({}).sort({ patientId: -1 }).limit(1);
-  // console.log(maxId[0].patientId);
-  return maxId[0].patientId;
-}
-// tmp();
-assignIds();
+// async function getLatestMax() {
+//   const maxId = await User.find({}).sort({ patientId: -1 }).limit(1);
+//   // console.log(maxId[0].patientId);
+//   return maxId[0].patientId;
+// }
+// // tmp();
+// assignIds();
 
-async function assignIds() {
-  const allUsers = await User.find({ type: "Patient" });
-  for (let p of allUsers) {
-    p.patientId--;
-    await p.save();
-    // console.log(p.patientId);
-    // const latestMax = await getLatestMax();
-    // console.log(p.patientId);
-    // if (!p.patientId) {
-    // p.patientId = latestMax + 1;
-    // await p.save();
-    // console.log("done");
-    // }
-    // console.log(latestMax);
-    // console.log(p);
-  }
-}
+// async function assignIds() {
+//   const allUsers = await User.find({ type: "Patient" });
+//   for (let p of allUsers) {
+//     p.patientId--;
+//     await p.save();
+//     // console.log(p.patientId);
+//     // const latestMax = await getLatestMax();
+//     // console.log(p.patientId);
+//     // if (!p.patientId) {
+//     // p.patientId = latestMax + 1;
+//     // await p.save();
+//     // console.log("done");
+//     // }
+//     // console.log(latestMax);
+//     // console.log(p);
+//   }
+// }
 
 cron.schedule("0 0 */3 * * *", () => {
   notifyUsers();
