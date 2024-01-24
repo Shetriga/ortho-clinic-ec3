@@ -28,7 +28,10 @@ const {
   putAppointmentValidations,
 } = require("../validation/admin");
 const { patientDataByIdValidations } = require("../validation/owner");
-const { getPatientDataById } = require("../controllers/ownerControllers");
+const {
+  getPatientDataById,
+  postPatientDataById,
+} = require("../controllers/ownerControllers");
 
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
 
