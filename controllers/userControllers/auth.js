@@ -44,11 +44,14 @@ exports.postSignup = async (req, res, next) => {
     if (userAlreadyExists) return res.sendStatus(409); // 409 means conflict
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const maxId = await User.find({}).sort({ patientId: -1 }).limit(1); // Getting max id to put to user (max + 1)
+    const patientId = maxId + 1;
     const newUser = new User({
       username: username.toLowerCase(),
       phone,
       password: hashedPassword,
       gender,
+      patientId,
     });
     if (type) {
       newUser.type = type;

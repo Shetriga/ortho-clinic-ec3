@@ -135,6 +135,7 @@ exports.patchAppointmentWaiting = async (req, res, next) => {
     );
     if (!foundAppointment) return res.sendStatus(404);
 
+    // Sending notification for the patient
     foundAppointment.status = "Waiting";
     await foundAppointment.save();
 

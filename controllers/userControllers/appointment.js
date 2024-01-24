@@ -52,6 +52,17 @@ exports.postNewAppointment = async (req, res, next) => {
       title: "حجـز جديد",
       body: `Name: ${name} - Date: ${date} - Time: ${time}`,
     });
+
+    // Sending notification for the owner (Dr Ahmed)
+    const ownerUser = await User.findOne({ type: "Owner" });
+    if (ownerUser) {
+      await sendNotification({
+        registrationToken: ownerUser.notificationToken,
+        title: "حجـز جديد",
+        body: `Name: ${name} - Date: ${date} - Time: ${time}`,
+      });
+    }
+
     socket.ioObject.emit(foundAdmin._id.toString(), {
       name: name,
       date,
