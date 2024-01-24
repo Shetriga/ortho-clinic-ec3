@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const { validationResult } = require("express-validator");
 
-exports.getPatientDataById = async (req, res, next) => {
+exports.postPatientDataById = async (req, res, next) => {
   const result = validationResult(req);
   if (!result.isEmpty()) {
     return res.status(401).json({
