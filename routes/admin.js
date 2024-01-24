@@ -72,11 +72,11 @@ router.patch(
   patchNotificationToken
 );
 
-router.get(
+router.post(
   "/patient/data/id",
   authorizedOwner,
   patientDataByIdValidations,
-  getPatientDataById
+  postPatientDataById
 );
 
 module.exports = router;
