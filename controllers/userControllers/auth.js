@@ -45,7 +45,7 @@ exports.postSignup = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const maxId = await User.find({}).sort({ patientId: -1 }).limit(1); // Getting max id to put to user (max + 1)
-    const patientId = maxId + 1;
+    const patientId = maxId[0].patientId + 1;
     const newUser = new User({
       username: username.toLowerCase(),
       phone,
@@ -75,6 +75,18 @@ exports.postSignup = async (req, res, next) => {
     });
     await newAuthInfo.save();
 
+    if (createdUser.type === "Patient") {
+      return res.status(200).json({
+        token,
+        refreshToken,
+        name: username,
+        phone,
+        type: createdUser.type,
+        patientId: createdUser.patientId,
+      });
+    }
+
+    // The user is not patient so we will not send patient Id
     res.status(200).json({
       token,
       refreshToken,
