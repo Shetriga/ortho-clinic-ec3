@@ -19,6 +19,7 @@ const {
   patchNotificationToken,
   postDeleteAccount,
   putAccountInfo,
+  deleteAccount,
 } = require("../controllers/userControllers/account");
 const {
   deleteAccountValidations,
@@ -59,5 +60,7 @@ router.post("/delete/account", deleteAccountValidations, postDeleteAccount);
 router.get("/appointment/details/:aid", authorizedUser, getAppointmentDetails);
 
 router.get("/visit/images/:aid", authorizedUser, getVisitImages);
+
+router.delete("/account", authorizedUser, deleteAccount);
 
 module.exports = router;

@@ -1,4 +1,8 @@
 const User = require("../../models/User");
+const Appointment = require("../../models/appointment");
+const Image = require("../../models/image");
+const AuthInfo = require("../../models/authInfo");
+const Visit = require("../../models/visit");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 
@@ -72,4 +76,32 @@ exports.postDeleteAccount = async (req, res, next) => {
   }
 
   res.sendStatus(200);
+};
+
+exports.deleteAccount = async (req, res, next) => {
+  const userId = req.user.userId;
+
+  try {
+    // Delete all data related to that user id from database
+    await User.findByIdAndDelete(userId); // User
+    await AuthInfo.findOneAndDelete({ userId: userId }); // AuthInfo
+    const userAppointments = await Appointment.find({ userId: userId }); // Appointments
+    for (const ap of userAppointments) {
+      await ap.deleteOne();
+    }
+    const userVisits = await Visit.find({ userId: userId }); // Visit
+    for (const vis of userVisits) {
+      await vis.deleteOne();
+    }
+    const userImages = await Image.find({ userId: userId }); // Image
+    for (const img of userImages) {
+      await img.deleteOne();
+    }
+
+    res.sendStatus(200);
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
 };
