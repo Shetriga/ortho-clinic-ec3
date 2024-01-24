@@ -6,6 +6,7 @@ const {
 const {
   authorizedUser,
   authorizedAdminOrUser,
+  authorizedAdminOrUserOrOwner,
 } = require("../middleware/Authorization");
 const {
   postNewAppointment,
@@ -29,7 +30,7 @@ const router = express.Router();
 
 router.post("/", postAddUser);
 
-router.get("/data", authorizedAdminOrUser, getUserData);
+router.get("/data", authorizedAdminOrUserOrOwner, getUserData);
 
 router.patch(
   "/notificationToken/:token",
