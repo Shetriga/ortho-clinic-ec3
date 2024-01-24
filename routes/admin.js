@@ -3,6 +3,7 @@ const {
   authorizedAdmin,
   authorizedAdminOrUser,
   authorizedAdminOrUserOrOwner,
+  authorizedOwner,
 } = require("../middleware/Authorization");
 const {
   postVisitImage,
@@ -26,6 +27,8 @@ const {
   appointmentCheckValidations,
   putAppointmentValidations,
 } = require("../validation/admin");
+const { patientDataByIdValidations } = require("../validation/owner");
+const { getPatientDataById } = require("../controllers/ownerControllers");
 
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
 
@@ -67,6 +70,13 @@ router.patch(
   "/notificationToken/:token",
   authorizedAdminOrUserOrOwner,
   patchNotificationToken
+);
+
+router.get(
+  "/patient/data/id",
+  authorizedOwner,
+  patientDataByIdValidations,
+  getPatientDataById
 );
 
 module.exports = router;
