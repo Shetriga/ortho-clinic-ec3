@@ -25,3 +25,53 @@ exports.postPatientDataById = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.postPatientDataByPhone = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { phone } = req.body;
+  try {
+    const foundPatient = await User.findOne({ phone: phone });
+    if (!foundPatient) return res.sendStatus(404);
+
+    res.status(200).json({
+      name: foundPatient.username,
+      gender: foundPatient.gender,
+      id: foundPatient._id,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
+
+exports.postPatientDataByName = async (req, res, next) => {
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(401).json({
+      errorMessage: `Validation error: ${result.errors[0].msg}`,
+    });
+  }
+
+  const { name } = req.body;
+  try {
+    const foundPatient = await User.findOne({ username: name });
+    if (!foundPatient) return res.sendStatus(404);
+
+    res.status(200).json({
+      name: foundPatient.username,
+      gender: foundPatient.gender,
+      id: foundPatient._id,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};

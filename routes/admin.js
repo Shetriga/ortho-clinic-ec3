@@ -27,10 +27,16 @@ const {
   appointmentCheckValidations,
   putAppointmentValidations,
 } = require("../validation/admin");
-const { patientDataByIdValidations } = require("../validation/owner");
+const {
+  patientDataByIdValidations,
+  patientDataByPhoneValidations,
+  patientDataByNameValidations,
+} = require("../validation/owner");
 const {
   getPatientDataById,
   postPatientDataById,
+  postPatientDataByPhone,
+  postPatientDataByName,
 } = require("../controllers/ownerControllers");
 
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
@@ -76,10 +82,17 @@ router.patch(
 );
 
 router.post(
-  "/patient/data/id",
+  "/patient/data/phone",
   authorizedOwner,
-  patientDataByIdValidations,
-  postPatientDataById
+  patientDataByPhoneValidations,
+  postPatientDataByPhone
+);
+
+router.post(
+  "/patient/data/name",
+  authorizedOwner,
+  patientDataByNameValidations,
+  postPatientDataByName
 );
 
 module.exports = router;
