@@ -17,6 +17,7 @@ exports.postPatientDataById = async (req, res, next) => {
     res.status(200).json({
       name: foundPatient.username,
       gender: foundPatient.gender,
+      id: foundPatient._id,
     });
   } catch (e) {
     const error = new Error(e.message);
