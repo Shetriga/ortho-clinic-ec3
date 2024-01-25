@@ -82,6 +82,13 @@ router.patch(
 );
 
 router.post(
+  "/patient/data/id",
+  authorizedOwner,
+  patientDataByIdValidations,
+  postPatientDataById
+);
+
+router.post(
   "/patient/data/phone",
   authorizedOwner,
   patientDataByPhoneValidations,
