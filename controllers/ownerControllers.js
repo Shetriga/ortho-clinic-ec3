@@ -75,3 +75,19 @@ exports.postPatientDataByName = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.getUserDataByOwner = async (req, res, next) => {
+  const userId = req.params.uid;
+  try {
+    const foundUser = await User.findById(userId);
+    if (!foundUser) return res.sendStatus(404);
+
+    res.status(200).json({
+      user: foundUser,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
