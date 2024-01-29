@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Appointment = require("../models/appointment");
 const { validationResult } = require("express-validator");
 
 exports.postPatientDataById = async (req, res, next) => {
@@ -90,4 +91,21 @@ exports.getUserDataByOwner = async (req, res, next) => {
     error.statusCode = 500;
     return next(error);
   }
+};
+
+exports.getUserAppointmentsByOwner = async (req, res, next) => {
+  const userId = req.params.uid;
+
+  let appointments;
+
+  try {
+    appointments = await Appointment.find({ userId });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+  res.status(200).json({
+    appointments,
+  });
 };

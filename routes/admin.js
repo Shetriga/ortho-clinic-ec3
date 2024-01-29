@@ -38,6 +38,7 @@ const {
   postPatientDataByPhone,
   postPatientDataByName,
   getUserDataByOwner,
+  getUserAppointmentsByOwner,
 } = require("../controllers/ownerControllers");
 
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
@@ -104,5 +105,11 @@ router.post(
 );
 
 router.get("/user/data/:uid", authorizedOwner, getUserDataByOwner);
+
+router.get(
+  "/user/appointments/:uid",
+  authorizedOwner,
+  getUserAppointmentsByOwner
+);
 
 module.exports = router;
