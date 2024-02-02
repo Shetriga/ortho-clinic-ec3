@@ -5,6 +5,7 @@ const AuthInfo = require("../../models/authInfo");
 const Visit = require("../../models/visit");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const { sendNotification } = require("../../util/notification");
 
 exports.patchNotificationToken = async (req, res, next) => {
   const token = req.params.token;
@@ -80,10 +81,17 @@ exports.postDeleteAccount = async (req, res, next) => {
 
 exports.deleteAccount = async (req, res, next) => {
   const userId = req.user.userId;
+  let notiToken;
 
   try {
+    const foundUser = await User.findById(userId);
+    if (!foundUser) return res.sendStatus(404);
+    // Now we know the user exists
+    if (foundUser.notificationToken !== null) {
+      notiToken = foundUser.notificationToken;
+    }
     // Delete all data related to that user id from database
-    await User.findByIdAndDelete(userId); // User
+    const userNotiToken = await User.findByIdAndDelete(userId); // User
     await AuthInfo.findOneAndDelete({ userId: userId }); // AuthInfo
     const userAppointments = await Appointment.find({ userId: userId }); // Appointments
     for (const ap of userAppointments) {
@@ -96,6 +104,14 @@ exports.deleteAccount = async (req, res, next) => {
     const userImages = await Image.find({ userId: userId }); // Image
     for (const img of userImages) {
       await img.deleteOne();
+    }
+
+    if (notiToken) {
+      await sendNotification({
+        registrationToken: notiToken,
+        title: "We are sad to see you go",
+        body: "We wish all the best to you. Always be safe and healthy!",
+      });
     }
 
     res.sendStatus(200);
