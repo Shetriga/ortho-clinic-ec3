@@ -1,5 +1,6 @@
 const Visit = require("../../models/visit");
 const Image = require("../../models/image");
+const User = require("../../models/User");
 
 exports.getVisitImages = async (req, res, next) => {
   const appointmentId = req.params.aid;
@@ -10,8 +11,15 @@ exports.getVisitImages = async (req, res, next) => {
     if (!foundVisit) {
       return res.sendStatus(404);
     }
-    if (req.user.userId !== foundVisit.userId.toString())
+
+    // Check if user is not owner and user ids not matching
+    const requestingUser = await User.findById(req.user.userId);
+    if (
+      requestingUser.type === "Patient" &&
+      req.user.userId !== foundVisit.userId.toString()
+    )
       return res.sendStatus(401);
+    // ///////////////////////////////////////////////////////////////////
     images = await Image.find({
       userId: foundVisit.userId,
       visitId: foundVisit._id,
