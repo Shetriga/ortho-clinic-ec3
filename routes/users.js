@@ -7,6 +7,7 @@ const {
   authorizedUser,
   authorizedAdminOrUser,
   authorizedAdminOrUserOrOwner,
+  authorizedUserOrOwner,
 } = require("../middleware/Authorization");
 const {
   postNewAppointment,
@@ -60,7 +61,11 @@ router.post("/delete/account", deleteAccountValidations, postDeleteAccount);
 
 router.delete("/account", authorizedUser);
 
-router.get("/appointment/details/:aid", authorizedUser, getAppointmentDetails);
+router.get(
+  "/appointment/details/:aid",
+  authorizedUserOrOwner,
+  getAppointmentDetails
+);
 
 router.get("/visit/images/:aid", authorizedUser, getVisitImages);
 
