@@ -63,11 +63,11 @@ router.delete("/account", authorizedUser);
 
 router.get(
   "/appointment/details/:aid",
-  authorizedUserOrOwner,
+  authorizedAdminOrUserOrOwner,
   getAppointmentDetails
 );
 
-router.get("/visit/images/:aid", authorizedUser, getVisitImages);
+router.get("/visit/images/:aid", authorizedUserOrOwner, getVisitImages);
 
 router.delete("/account", authorizedUser, deleteAccount);
 
