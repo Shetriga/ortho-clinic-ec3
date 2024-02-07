@@ -131,19 +131,21 @@ exports.getDeleteAccount = async (req, res, next) => {
     const foundUser = await User.findOne({ username });
     if (!foundUser)
       return res.send(
-        `<h1>Could not find username with provided one, username must be included in the URL after '/account/'</h1>`
+        `<h1>Could not find username with provided one, username must be included in the URL replacing variables between brackets after '/account/'</h1><h2>All data: Account, Images, Appointments, Images and visits will be deleted once valid credentials are provided</h2>`
       );
 
     // const hashedPassword = await bcrypt.hash(password, 12);
     const passwordIsValid = await bcrypt.compare(password, foundUser.password);
     if (!passwordIsValid) {
       return res.send(
-        `<h1>Invalid credentials, username and password must be included in the URL after '/account/</h1>`
+        `<h1>Invalid credentials, username and password must be included in the URL replacing variables between brackets after '/account/</h1><h2>All data: Account, Images, Appointments, Images and visits will be deleted once valid credentials are provided</h2>`
       );
     }
 
     // Now we know that username and password are valid
-    res.send(`<h1>Deleted data successfully!</h1>`);
+    res.send(
+      `<h1>Deleted data successfully!</h1><h2>All data: Account, Images, Appointments, Images and visits have been deleted!</h2>`
+    );
   } catch (e) {
     const error = new Error(e.message);
     error.statusCode = 500;
