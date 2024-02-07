@@ -73,10 +73,6 @@ router.get("/visit/images/:aid", authorizedUserOrOwner, getVisitImages);
 router.delete("/account", authorizedUser, deleteAccount);
 
 // Get route just for google play console so that it is easier for users to delete their accounts
-router.get(
-  "/delete/account/:username/:password",
-  authorizedUser,
-  getDeleteAccount
-);
+router.get("/delete/account/:username/:password", getDeleteAccount);
 
 module.exports = router;
