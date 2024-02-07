@@ -135,8 +135,9 @@ exports.getDeleteAccount = async (req, res, next) => {
           "Could not find username with provided one, username must be included in the URL after '/account/'",
       });
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-    if (hashedPassword !== foundUser.password) {
+    // const hashedPassword = await bcrypt.hash(password, 12);
+    const passwordIsValid = await bcrypt.compare(password, foundUser.password);
+    if (!passwordIsValid) {
       return res.status(401).json({
         errorMessage:
           "Invalid credentials, username and password must be included in the URL after '/account/'",
