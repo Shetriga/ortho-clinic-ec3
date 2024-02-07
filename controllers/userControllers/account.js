@@ -121,3 +121,35 @@ exports.deleteAccount = async (req, res, next) => {
     return next(error);
   }
 };
+
+// This controller is just for google play console data safety
+exports.getDeleteAccount = async (req, res, next) => {
+  const username = req.params.username;
+  const password = req.params.password;
+
+  try {
+    const foundUser = await User.findOne({ username });
+    if (!foundUser)
+      return res.status(404).json({
+        errorMessage:
+          "Could not find username with provided one, username must be included in the URL after '/account/'",
+      });
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    if (hashedPassword !== foundUser.password) {
+      return res.status(401).json({
+        errorMessage:
+          "Invalid credentials, username and password must be included in the URL after '/account/'",
+      });
+    }
+
+    // Now we know that username and password are valid
+    res.status(200).json({
+      message: "Data Deleted successfully!",
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
