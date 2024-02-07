@@ -130,24 +130,20 @@ exports.getDeleteAccount = async (req, res, next) => {
   try {
     const foundUser = await User.findOne({ username });
     if (!foundUser)
-      return res.status(404).json({
-        errorMessage:
-          "Could not find username with provided one, username must be included in the URL after '/account/'",
-      });
+      return res.send(
+        `<h1>Could not find username with provided one, username must be included in the URL after '/account/'</h1>`
+      );
 
     // const hashedPassword = await bcrypt.hash(password, 12);
     const passwordIsValid = await bcrypt.compare(password, foundUser.password);
     if (!passwordIsValid) {
-      return res.status(401).json({
-        errorMessage:
-          "Invalid credentials, username and password must be included in the URL after '/account/'",
-      });
+      return res.send(
+        `<h1>Invalid credentials, username and password must be included in the URL after '/account/</h1>`
+      );
     }
 
     // Now we know that username and password are valid
-    res.status(200).json({
-      message: "Data Deleted successfully!",
-    });
+    res.send(`<h1>Deleted data successfully!</h1>`);
   } catch (e) {
     const error = new Error(e.message);
     error.statusCode = 500;
