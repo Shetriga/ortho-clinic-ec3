@@ -31,6 +31,7 @@ const {
   patientDataByIdValidations,
   patientDataByPhoneValidations,
   patientDataByNameValidations,
+  patientDataByIdAndPhoneValidations,
 } = require("../validation/owner");
 const {
   getPatientDataById,
@@ -39,6 +40,7 @@ const {
   postPatientDataByName,
   getUserDataByOwner,
   getUserAppointmentsByOwner,
+  postPatientDataByIdAndPhone,
 } = require("../controllers/ownerControllers");
 
 router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
@@ -102,6 +104,13 @@ router.post(
   authorizedOwner,
   patientDataByNameValidations,
   postPatientDataByName
+);
+
+router.post(
+  "/patient/data/idAndPhone",
+  authorizedOwner,
+  patientDataByIdAndPhoneValidations,
+  postPatientDataByIdAndPhone
 );
 
 router.get("/user/data/:uid", authorizedOwner, getUserDataByOwner);
