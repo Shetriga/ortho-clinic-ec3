@@ -36,7 +36,7 @@ router.post("/login", postLoginValidation, postLogin);
 
 router.post("/refreshToken", tokenValidation, postRefreshToken);
 
-router.post("/validate/token", authorizedAdminOrUser, postValidateToken);
+router.post("/validate/token", authorizedAdminOrUserOrOwner, postValidateToken);
 
 router.post("/logout", authorizedAdminOrUserOrOwner, postLogout);
 
