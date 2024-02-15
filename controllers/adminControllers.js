@@ -217,9 +217,14 @@ exports.deleteAppointment = async (req, res, next) => {
 
 exports.getAppointmentsForClinic = async (req, res, next) => {
   const clinic = req.params.clinic;
+  let appointments;
 
   try {
-    const appointments = await Appointment.find({ clinic });
+    if (clinic === "All") {
+      appointments = await Appointment.find({});
+    } else {
+      appointments = await Appointment.find({ clinic });
+    }
     res.status(200).json({
       appointments,
     });
