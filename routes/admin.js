@@ -4,6 +4,7 @@ const {
   authorizedAdminOrUser,
   authorizedAdminOrUserOrOwner,
   authorizedOwner,
+  authorizedAdminOrOwner,
 } = require("../middleware/Authorization");
 const {
   postVisitImage,
@@ -45,32 +46,32 @@ const {
 
 router.post(
   "/visit/image/:vid",
-  authorizedAdminOrUser,
+  authorizedAdminOrOwner,
   multerHelper,
   postVisitImage
 );
 
-router.post("/visit/:aid/:uid", authorizedAdminOrUser, postAddVisit);
+router.post("/visit/:aid/:uid", authorizedAdminOrOwner, postAddVisit);
 
-router.get("/visitId/:aid", authorizedAdminOrUser, getVisitId);
+router.get("/visitId/:aid", authorizedAdminOrOwner, getVisitId);
 
-router.get("/all/appointments", authorizedAdminOrUser, getAllAppointments);
+router.get("/all/appointments", authorizedAdminOrOwner, getAllAppointments);
 
 router.get(
   "/appointments/:clinic",
-  authorizedAdminOrUser,
+  authorizedAdminOrOwner,
   getAppointmentsForClinic
 );
 
 router.get(
   "/appointment/details/:aid",
-  authorizedAdminOrUser,
+  authorizedAdminOrOwner,
   getAppointmentDetails
 );
 
 router.patch(
   "/appointment/waiting/:aid",
-  authorizedAdminOrUser,
+  authorizedAdminOrOwner,
   patchAppointmentWaiting
 );
 
@@ -83,16 +84,16 @@ router.post(
 
 router.put(
   "/appointment/details/:aid",
-  authorizedAdminOrUser,
+  authorizedAdminOrOwner,
   putAppointmentValidations,
   putAppointmentDetails
 );
 
-router.delete("/appointment/:aid", authorizedAdminOrUser, deleteAppointment);
+router.delete("/appointment/:aid", authorizedAdminOrOwner, deleteAppointment);
 
 router.patch(
   "/appointment/done/:aid",
-  authorizedAdminOrUser,
+  authorizedAdminOrOwner,
   patchAppointmentDone
 );
 
