@@ -43,21 +43,34 @@ const {
   postPatientDataByIdAndPhone,
 } = require("../controllers/ownerControllers");
 
-router.post("/visit/image/:vid", authorizedAdmin, multerHelper, postVisitImage);
+router.post(
+  "/visit/image/:vid",
+  authorizedAdminOrUser,
+  multerHelper,
+  postVisitImage
+);
 
-router.post("/visit/:aid/:uid", authorizedAdmin, postAddVisit);
+router.post("/visit/:aid/:uid", authorizedAdminOrUser, postAddVisit);
 
-router.get("/visitId/:aid", authorizedAdmin, getVisitId);
+router.get("/visitId/:aid", authorizedAdminOrUser, getVisitId);
 
-router.get("/all/appointments", authorizedAdmin, getAllAppointments);
+router.get("/all/appointments", authorizedAdminOrUser, getAllAppointments);
 
-router.get("/appointments/:clinic", authorizedAdmin, getAppointmentsForClinic);
+router.get(
+  "/appointments/:clinic",
+  authorizedAdminOrUser,
+  getAppointmentsForClinic
+);
 
-router.get("/appointment/details/:aid", authorizedAdmin, getAppointmentDetails);
+router.get(
+  "/appointment/details/:aid",
+  authorizedAdminOrUser,
+  getAppointmentDetails
+);
 
 router.patch(
   "/appointment/waiting/:aid",
-  authorizedAdmin,
+  authorizedAdminOrUser,
   patchAppointmentWaiting
 );
 
@@ -70,14 +83,18 @@ router.post(
 
 router.put(
   "/appointment/details/:aid",
-  authorizedAdmin,
+  authorizedAdminOrUser,
   putAppointmentValidations,
   putAppointmentDetails
 );
 
-router.delete("/appointment/:aid", authorizedAdmin, deleteAppointment);
+router.delete("/appointment/:aid", authorizedAdminOrUser, deleteAppointment);
 
-router.patch("/appointment/done/:aid", authorizedAdmin, patchAppointmentDone);
+router.patch(
+  "/appointment/done/:aid",
+  authorizedAdminOrUser,
+  patchAppointmentDone
+);
 
 router.patch(
   "/notificationToken/:token",
