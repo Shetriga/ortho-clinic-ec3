@@ -15,6 +15,7 @@ const io = new Server(server);
 const cron = require("node-cron");
 const { notifyUsers } = require("./controllers/userControllers/appointment");
 const User = require("./models/User");
+const { sendNotification } = require("./util/notification");
 
 // async function getLatestMax() {
 //   const maxId = await User.find({}).sort({ patientId: -1 }).limit(1);
@@ -23,6 +24,32 @@ const User = require("./models/User");
 // }
 // // tmp();
 // assignIds();
+
+// async function tmp() {
+//   const foundUsers = await User.find({});
+//   if (!foundUsers) {
+//     console.log("No one found");
+//     return;
+//   }
+
+//   for (let i of foundUsers) {
+//     if (!i.notificationToken) {
+//       console.log(`Patient with name ${i.username} does not have token`);
+//     } else {
+//       await sendNotification({
+//         registrationToken: i.notificationToken,
+//         title: "رمضان كريم",
+//         body: "دكتور احمد عاطف يُهنئكم بحلول شهر رمضان الكريم وكل عام وأنتم بخير",
+//       });
+//     }
+//   }
+
+// console.log(foundUsers[0].notificationToken);
+// for (let i of foundUsers) {
+
+//   console.log("Done Once");
+// }
+// }
 
 // async function assignIds() {
 //   const allUsers = await User.find({ type: "Patient" });

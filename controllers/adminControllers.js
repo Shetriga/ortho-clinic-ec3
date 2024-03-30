@@ -221,7 +221,7 @@ exports.getAppointmentsForClinic = async (req, res, next) => {
 
   try {
     if (clinic === "All") {
-      appointments = await Appointment.find({});
+      appointments = await Appointment.find({}).populate("userId");
     } else {
       appointments = await Appointment.find({ clinic });
     }
