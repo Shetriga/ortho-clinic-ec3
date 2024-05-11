@@ -152,8 +152,8 @@ exports.cancelDay = async (req, res, next) => {
     dayAppointments.forEach(async (ap) => {
       await sendNotification({
         registrationToken: ap.userId.notificationToken,
-        body: "Appointment Cancelled",
-        title: "Sorry!",
+        body: "إعتذار د / أحمد عاطف عن التواجد بالعيادة اليوم لظروف طارئة, سيتم التواصل معكم لتحديد موعد بديل",
+        title: "تنبيه",
       });
     });
 
