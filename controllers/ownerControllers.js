@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Appointment = require("../models/appointment");
 const { validationResult } = require("express-validator");
+const { sendNotification } = require("../util/notification");
 
 exports.postPatientDataById = async (req, res, next) => {
   const result = validationResult(req);
@@ -148,6 +149,13 @@ exports.cancelDay = async (req, res, next) => {
 
     // Now we know there are appointments in that specific day
     console.log(dayAppointments);
+    dayAppointments.forEach(async (ap) => {
+      await sendNotification({
+        registrationToken: ap.userId.notificationToken,
+        body: "Appointment Cancelled",
+        title: "Sorry!",
+      });
+    });
 
     res.status(200).json({
       appointments: dayAppointments,
