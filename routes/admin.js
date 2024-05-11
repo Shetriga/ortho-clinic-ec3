@@ -42,6 +42,7 @@ const {
   getUserDataByOwner,
   getUserAppointmentsByOwner,
   postPatientDataByIdAndPhone,
+  cancelDay,
 } = require("../controllers/ownerControllers");
 
 router.post(
@@ -138,5 +139,7 @@ router.get(
   authorizedOwner,
   getUserAppointmentsByOwner
 );
+
+router.get("/cancel/day/:day(*)", authorizedOwner, cancelDay);
 
 module.exports = router;

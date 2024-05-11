@@ -134,3 +134,27 @@ exports.getUserAppointmentsByOwner = async (req, res, next) => {
     appointments,
   });
 };
+
+exports.cancelDay = async (req, res, next) => {
+  const day = req.params.day;
+
+  try {
+    const dayAppointments = await Appointment.find({ date: day }).populate(
+      "userId"
+    );
+    if (!dayAppointments) return res.sendStatus(404);
+
+    if (dayAppointments.length === 0) return res.sendStatus(404);
+
+    // Now we know there are appointments in that specific day
+    console.log(dayAppointments);
+
+    res.status(200).json({
+      appointments: dayAppointments,
+    });
+  } catch (e) {
+    const error = new Error(e.message);
+    error.statusCode = 500;
+    return next(error);
+  }
+};
